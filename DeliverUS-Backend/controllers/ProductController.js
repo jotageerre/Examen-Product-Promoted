@@ -40,6 +40,7 @@ exports.show = async function (req, res) {
 
 exports.create = async function (req, res) {
   let newProduct = Product.build(req.body)
+  newProduct.promoted = true
   if (typeof req.file !== 'undefined') {
     newProduct.image = req.file.destination + '/' + req.file.filename
   }
@@ -91,7 +92,7 @@ exports.popular = async function (req, res) {
         {
           model: Restaurant,
           as: 'restaurant',
-          attributes: ['id', 'name', 'description', 'address', 'postalCode', 'url', 'shippingCosts', 'averageServiceMinutes', 'email', 'phone', 'logo', 'heroImage', 'status', 'restaurantCategoryId'],
+          attributes: ['id', 'name', 'promoted', 'description', 'address', 'postalCode', 'url', 'shippingCosts', 'averageServiceMinutes', 'email', 'phone', 'logo', 'heroImage', 'status', 'restaurantCategoryId'],
           include:
         {
           model: RestaurantCategory,

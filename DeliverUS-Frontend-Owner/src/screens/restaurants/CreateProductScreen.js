@@ -18,7 +18,7 @@ export default function CreateProductScreen ({ navigation, route }) {
   const [productCategories, setProductCategories] = useState([])
   const [backendErrors, setBackendErrors] = useState()
 
-  const initialProductValues = { name: null, description: null, price: null, order: null, restaurantId: route.params.id, productCategoryId: null, availability: true }
+  const initialProductValues = { name: null, promoted: null, description: null, price: null, order: null, restaurantId: route.params.id, productCategoryId: null, availability: true }
   const validationSchema = yup.object().shape({
     name: yup
       .string()
@@ -28,6 +28,8 @@ export default function CreateProductScreen ({ navigation, route }) {
       .number()
       .positive('Please provide a positive price value')
       .required('Price is required'),
+    promoted: yup
+      .boolean(),
     order: yup
       .number()
       .nullable()
@@ -148,6 +150,19 @@ export default function CreateProductScreen ({ navigation, route }) {
                 }
               />
               <ErrorMessage name={'availability'} render={msg => <TextError>{msg}</TextError> }/>
+
+              <Switch
+                trackColor={{ false: GlobalStyles.brandSecondary, true: GlobalStyles.brandPrimary }}
+                thumbColor={values.promoted ? GlobalStyles.brandSecondary : '#f4f3f4'}
+                // onValueChange={toggleSwitch}
+                value={values.promoted}
+                style={styles.switch}
+                onValueChange={value =>
+                  setFieldValue('promoted', value)
+                }
+              />
+
+              <ErrorMessage name={'promoted'} render={msg => <TextError>{msg}</TextError> }/>
 
               <Pressable onPress={() =>
                 pickImage(

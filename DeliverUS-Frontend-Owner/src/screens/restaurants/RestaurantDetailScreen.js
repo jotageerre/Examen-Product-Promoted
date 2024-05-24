@@ -65,6 +65,10 @@ export default function RestaurantDetailScreen ({ navigation, route }) {
         {!item.availability &&
           <TextRegular textStyle={styles.availability }>Not available</TextRegular>
         }
+
+      {item.promoted &&
+          <TextRegular textStyle={styles.promoted }>En promocion!</TextRegular>
+        }
          <View style={styles.actionButtonsContainer}>
           <Pressable
             onPress={() => navigation.navigate('EditProductScreen', { id: item.id })
@@ -228,6 +232,11 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     marginRight: 5,
     color: GlobalStyles.brandSecondary
+  },
+  promoted: {
+    textAlign: 'right',
+    marginRight: 5,
+    color: GlobalStyles.brandPrimary
   },
   actionButton: {
     borderRadius: 8,

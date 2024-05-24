@@ -1,5 +1,5 @@
 const { check } = require('express-validator')
-const { Restaurant } = require('../../models')
+const { Restaurant, Product } = require('../../models')
 const { checkFileIsImage, checkFileMaxSize } = require('./FileValidationHelper')
 
 const maxFileSize = 2000000 // around 2Mb
@@ -14,9 +14,26 @@ const checkRestaurantExists = async (value, { req }) => {
     return Promise.reject(new Error(err))
   }
 }
+
+const checkBussinessRuleOneProductPromoted = async (restId, promotedValue) => {
+  if (promotedValue) {
+    try {
+      const promotedProducts = await Product.findAll({ where: { restaurantId: restId, promoted: true } })
+      if (promotedProducts.length !== 0) {
+        return Promise.reject(new Error('You can only promote one product at a time'))
+      }
+    } catch (err) {
+      return Promise.reject(new Error(err))
+    }
+  }
+
+  return Promise.resolve('ok')
+}
+
 module.exports = {
   create: [
     check('name').exists().isString().isLength({ min: 1, max: 255 }).trim(),
+    check('promoted').exists().isBoolean().toBoolean().custom(checkBussinessRuleOneProductPromoted),
     check('description').optional({ checkNull: true, checkFalsy: true }).isString().isLength({ min: 1 }).trim(),
     check('price').exists().isFloat({ min: 0 }).toFloat(),
     check('order').default(null).optional({ nullable: true }).isInt().toInt(),
